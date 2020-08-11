@@ -32,9 +32,7 @@ def webrtc_tester(audiodir, labelspath, aggressiveness, norm_LU=False, plots_on=
         Takes a value that must be a negative integer as the target LU at which to loudness normalise the file (dB). The default is False, i.e. no normalisation.
     plots_on : bool or int, optional
         Decides if/how many plots of true/predicted speech to plot for the files given. False: no plots (default); True: plot all files; integer n: plot the first n files
-    chunks : bool, optional
-        Produces audio chunks for detected speech. Not. The default is False.
-
+        
     Returns
     -------
     true_speech: list of floats
@@ -90,7 +88,7 @@ plots_on = False  # Plot true/predicted speech. False for none, True for all, or
 norm_LU = -35     # False or a number
 
 path = r'D:\Big Files\Humbug OneDrive\Experiments\test_files\input'
-labelspath = join(path, 'speech_labels') 
+labelspath = join(path, 'speech_labels')
 
 audiodir = path
 

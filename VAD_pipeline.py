@@ -24,7 +24,7 @@ from webrtc_vad import VAD
 from webrtc_utils import speech_stripper
 
 
-def VAD_pipeline(root, file, destination, agg=0, sr=8000, LU =-23, norm_only=False):
+def VAD_pipeline(root, file, destination, agg=0, sr=8000, LU=-23, norm_only=False):
     '''
 
     Parameters
@@ -39,8 +39,8 @@ def VAD_pipeline(root, file, destination, agg=0, sr=8000, LU =-23, norm_only=Fal
         Aggressiveness of VAD. The default is 0, i.e. less aggressive about removing noise, false positives preferred to false negatives.
     sr : int, optional
         Sampling frequency in Hz. The default is 8kHz.
-    LU : int or float, optional
-        Target output file loudness. The default is -23, the broadcasting standard.
+    LU : int or float or None, optional
+        Target output file loudness. The default is -23, the broadcasting standard. None is also an option, in which no loudness normalisation is performed.
         
     Returns
     -------
@@ -48,11 +48,15 @@ def VAD_pipeline(root, file, destination, agg=0, sr=8000, LU =-23, norm_only=Fal
 
     '''
     path = join(root, file)
+    if not os.path.exists(destination): os.mkdir(destination)
     data, sr = librosa.load(path, sr=8000)
     meter = pyln.Meter(sr) # create BS.1770 meter
     loudness = meter.integrated_loudness(data) # measure loudness
     print('\n%s\nLength = %.2fs\nLoudness = %.2fdB' % (file, data.shape[0]/sr, loudness))
-    loudness_normalized_audio = pyln.normalize.loudness(data,loudness, LU)
+    if LU == None:
+        loudness_normalized_audio = data
+    else:
+        loudness_normalized_audio = pyln.normalize.loudness(data,loudness, LU)
     sf.write(join(destination,file), loudness_normalized_audio, sr, 
              subtype='PCM_16') 
     timestamps = VAD(join(destination,file), agg, chunks=False)
@@ -64,8 +68,12 @@ def VAD_pipeline(root, file, destination, agg=0, sr=8000, LU =-23, norm_only=Fal
     
     if stripped_t.shape[0]/sr > 1:  # Must be >1s of non-speech
         sf.write(join(destination,file), stripped_t, sr, subtype='PCM_16')
-        print('New length = %.2fs\nNew loudness = %.2fdB' % \
+        if LU != None:
+            print('New length = %.2fs\nNew loudness = %.2fdB' % \
               (stripped_t.shape[0]/sr, LU))
+        else:
+            print('New length = %.2fs\nLoudness unchanged' % \
+              (stripped_t.shape[0]/sr))
     else:
         print('File not processed, entirely speech detected')
         os.remove(join(destination, file))
@@ -73,9 +81,8 @@ def VAD_pipeline(root, file, destination, agg=0, sr=8000, LU =-23, norm_only=Fal
 
 def main():
     root = r'D:\Big Files\Humbug OneDrive\Experiments\REPORT\noise_experiments\test\input'
-    if not os.path.exists(destination): os.mkdir(destination)
     destination = root[:-5] + 'output'
-    LU = -35            # similar to most of our moz test files
+    LU = -35           # similar to most of our moz test files
     for file in os.listdir(root):
         if file.endswith('.wav'):
             VAD_pipeline(root, file, destination, LU=LU)
