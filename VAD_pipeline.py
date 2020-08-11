@@ -73,6 +73,7 @@ def VAD_pipeline(root, file, destination, agg=0, sr=8000, LU =-23, norm_only=Fal
 
 def main():
     root = r'D:\Big Files\Humbug OneDrive\Experiments\REPORT\noise_experiments\test\input'
+    if not os.path.exists(destination): os.mkdir(destination)
     destination = root[:-5] + 'output'
     LU = -35            # similar to most of our moz test files
     for file in os.listdir(root):
