@@ -174,11 +174,3 @@ def VAD(path, aggressiveness, chunks=False):
             write_wave(path+'chunk-%002d.wav'%(i,), segment, sample_rate)
             i+=1
     return timestamps
-
-# aggressiveness = 0
-# wavpath = 'C:/Users/benpg/py-webrtcvad/audio/ben.wav'
-# root = 'webRTC/'
-# timestamps = main(wavpath, root, aggressiveness=3)
-
-# if __name__ == '__main__':
-#     main(sys.argv[1:])

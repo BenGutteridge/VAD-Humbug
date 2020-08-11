@@ -24,7 +24,7 @@ from webrtc_vad import VAD
 from webrtc_utils import speech_stripper
 
 
-def VAD_pipeline(root, file, destination, agg=0, sr=8000, LU =-35, norm_only=False):
+def VAD_pipeline(root, file, destination, agg=0, sr=8000, LU =-23, norm_only=False):
     '''
 
     Parameters
@@ -40,7 +40,7 @@ def VAD_pipeline(root, file, destination, agg=0, sr=8000, LU =-35, norm_only=Fal
     sr : int, optional
         Sampling frequency in Hz. The default is 8kHz.
     LU : int or float, optional
-        Target output file loudness. The default is -35, approximately the same loudness of much of our mosquito recordings.
+        Target output file loudness. The default is -23, the broadcasting standard.
         
     Returns
     -------
@@ -60,7 +60,7 @@ def VAD_pipeline(root, file, destination, agg=0, sr=8000, LU =-35, norm_only=Fal
     
     if norm_only == True:
         print('New loudness = %.2fdB' % LU)
-        return 0
+        return 0    # terminate early
     
     if stripped_t.shape[0]/sr > 1:  # Must be >1s of non-speech
         sf.write(join(destination,file), stripped_t, sr, subtype='PCM_16')

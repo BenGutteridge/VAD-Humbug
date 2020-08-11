@@ -6,10 +6,8 @@ Created on Sun Aug  9 08:05:07 2020
 """
 #webrtc utils
 
-from os.path import join
 import numpy as np
 import matplotlib.pyplot as plt
-import soundfile as sf
 
 def plt_speech(speech_pred_labels, speech_labels, file_length, filename, audio, sr):
     '''
@@ -30,7 +28,7 @@ def plt_speech(speech_pred_labels, speech_labels, file_length, filename, audio, 
 
     Returns
     -------
-    None. Plots true and predicted speech, and the raw audio itself, sampled at 2KHz.
+    None. Plots true and predicted speech, and the raw audio itself, sampled at 2KHz to reduce to a manageable number of points.
     ''' 
     
     plt.figure(filename)
@@ -78,7 +76,7 @@ def speech_stats(speech_pred_labels, speech_labels, file_length):
     Prints results of test, comparing predicted with true, and a confusion matrix.
 
     '''
-    # 
+
     true_speech, speech_pred_total_length = 0, 0
     incident_count = np.zeros((speech_labels.shape[0],))
     speech_total_length = np.sum(speech_labels[:,1] - speech_labels[:,0])
@@ -113,7 +111,6 @@ def speech_stats(speech_pred_labels, speech_labels, file_length):
     print('%13s'%'' + '-'*33)
     print('%12s%12.2f%12.2f | %6.2f' % ('', q7,q8,q9))
     
-        
     
     # Print some test statistics
     
