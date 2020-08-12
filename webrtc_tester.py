@@ -39,9 +39,14 @@ def webrtc_tester(audiodir, labelspath, aggressiveness, norm_LU=False, plots_on=
         List with each element the number of seconds of correctly identified speech in each file.
     speech_total_length: list of floats
         List with each element the total number of seconds of speech in each file, given by the speech labels
+    true_noise: list of floats
+        List with each element the number of seconds of correctly identified noise in each file.
+    noise_total_length: list of floats
+        List with each element the total number of seconds of noise in each file.
+
     '''
     pltcount = 0
-    true_speech, speech_total_length = [], []
+    true_speech, speech_total_length, true_noise, noise_total_length = [],[],[],[]
     if plots_on==True: plots_on = np.inf     # plot all files if no limit set
     if norm_LU:
         normdir = join(audiodir,'norm')
@@ -78,23 +83,28 @@ def webrtc_tester(audiodir, labelspath, aggressiveness, norm_LU=False, plots_on=
             # Keep running total of length of speech and length predicted correctly
             true_speech.append(stats[0])
             speech_total_length.append(stats[1])
-    return(true_speech, speech_total_length)
+            true_noise.append(stats[2])
+            noise_total_length.append(stats[3])
+    return(true_speech, speech_total_length, true_noise, noise_total_length)
 
 
 plt.close('all')
 
 aggressiveness = 0
-plots_on = False  # Plot true/predicted speech. False for none, True for all, or an int number
+plots_on = True  # Plot true/predicted speech. False for none, True for all, or an int number
 norm_LU = -35     # False or a number
 
-path = r'D:\Big Files\Humbug OneDrive\Experiments\test_files\input'
+path = r'D:\Big Files\Humbug OneDrive\Experiments\IHI_small_sample'
 labelspath = join(path, 'speech_labels')
 
 audiodir = path
 
-true_speech, speech_total_length = \
+true_speech, speech_total_length, true_noise, noise_total_length = \
     webrtc_tester(audiodir, labelspath, aggressiveness, norm_LU, plots_on)
 
 tpr_overall = np.sum(true_speech)/np.sum(speech_total_length)
+tnr_overall = np.sum(true_noise)/np.sum(noise_total_length)
 print('\nOVERALL:\n%.4f percent of speech detected (%.2f out of %.2f seconds)' \
       % (100*tpr_overall, np.sum(true_speech), np.sum(speech_total_length)))
+print('%.4f percent of noise preserved (%.2f out of %.2f seconds)' \
+  % (100*tnr_overall, np.sum(true_noise), np.sum(noise_total_length)))

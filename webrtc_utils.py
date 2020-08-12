@@ -128,7 +128,9 @@ def speech_stats(speech_pred_labels, speech_labels, file_length):
     print('%.2f percent of speech sound in seconds correctly classified (%.2f seconds out of %.2f)'\
           % (speech_length_TPR*100, true_speech, speech_total_length))
     
-    return(true_speech, speech_total_length)
+    true_noise = q5
+    noise_total_length = q8
+    return(true_speech, speech_total_length, true_noise, noise_total_length)
 
 
 def speech_stripper(t_series, labels, sr=8000, Lbuffer=0.0, Rbuffer=0.0):
